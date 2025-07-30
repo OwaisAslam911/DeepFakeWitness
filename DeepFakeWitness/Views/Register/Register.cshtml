@@ -1,0 +1,211 @@
+﻿
+@{
+    ViewData["Title"] = "Register";
+}
+@{
+    Layout = "authLayout";
+}
+<div class="container-fluid  bg-dark text-white " data-bs-theme="dark">
+    <div class="row h-100">
+        <div class="col-md-6  d-none d-md-flex align-items-center">
+            <div class="p-5">
+                <div class="pb-5 logoarea">
+                    <h1>
+                        <i class="logoshield fa-solid fa-shield-halved "></i>
+                        <span class="logotext">TruthLens</span>
+                    </h1>
+                </div>
+
+                <div class="d-flex gap-3 mb-4">
+                    <i class="fs-1 fa-solid fa-shield-halved "></i>
+                    <div>
+                        <h3 class="fw-bold">Deepfake Detection</h3>
+                        <p class="text-muted">
+                            Analyze images instantly to detect manipulations or deep faked content
+                        </p>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 mb-4">
+                    <i class="fa-regular fa-id-badge fs-1"></i>
+                    <div>
+                        <h3 class="fw-bold">Secure & Confidential</h3>
+                        <p class="text-muted">
+                            Your uploads are private, encrypted, and never stored without
+                            permission.
+
+                        </p>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3">
+                    <i class="fs-1 fa-solid fa-clipboard"></i>
+                    <div>
+                        <h3 class="fw-bold">Generate Verifiable Reports</h3>
+                        <p class="text-muted">Export secure proof reports for legal or academic use.</p>
+                    </div>
+                </div>
+
+                <div class="mt-5 pt-4">
+                    <div class="d-flex align-items-center gap-1 mb-2">
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-fill text-warning"></i>
+                        <i class="bi bi-star-half text-warning"></i>
+                        <span class="ms-2 text-muted">4.8/5 (1.2M reviews)</span>
+                    </div>
+                    <p class="h5 text-muted">Trusted by 5M+ customers worldwide</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 d-flex align-items-center justify-content-center p-5">
+            <div class="w-100" style="max-width: 500px">
+                <h2 class="mb-4 fw-bold">Create Account</h2>
+
+                <form>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">User Name</label>
+                            <input type="text" id="UserName" name="UserName" class="form-control" required>
+                        </div>
+                        
+
+                        <div class="col-12">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="email" name="Email" class="form-control" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Phone</label>
+                            <input type="text" id="phone" name="Phone" class="form-control" >
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Password</label>
+                            <div class="position-relative">
+                                <input type="password" id="password" name="UserPassword" class="form-control pe-5" required>
+                                <i class="fa-solid fa-eye position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;" onclick="togglePassword('password', this)"></i>
+                            </div>
+                            <div class="form-text">Minimum 8 characters with 1 number</div>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Confirm Password</label>
+                            <div class="position-relative">
+                                <input type="password" id="confirmPassword" class="form-control pe-5" required>
+                                <i class="fa-solid fa-eye position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;" onclick="togglePassword('confirmPassword', this)"></i>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" required>
+                                <label class="form-check-label">
+                                    I agree to the <a href="#" class="text-decoration-none">Terms & Conditions</a>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="col-12">
+                            <button class="btn btn-primary w-100 py-2" onclick="RegisterUser()">
+                                Create
+                                Account
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                   <p class="text-muted">Already have an account? <a asp-controller="Login" asp-action="Login"
+                            class="text-decoration-none">Sign
+                            In</a></p> 
+               @*      <p class="text-muted">
+                        Already have an account? <a href="login.html"
+                                                    class="text-decoration-none">
+                            Sign
+                            In
+                        </a>
+                    </p> *@
+
+                    <div class="d-flex align-items-center my-4">
+                        <hr class="flex-grow-1">
+                        <span class="px-3 text-muted">or continue with</span>
+                        <hr class="flex-grow-1">
+                    </div>
+
+                    <div class="d-flex gap-3 justify-content-center">
+                        <button class="btn btn-outline-light btn-lg rounded-circle">
+                            <i class="fa-brands fa-google"></i>
+                        </button>
+                        <button class="btn btn-outline-light btn-lg rounded-circle">
+                            <i class="fa-brands fa-facebook"></i>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/Toastify.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script>
+    function togglePassword(inputId, icon) {
+        const input = document.getElementById(inputId);
+        const isPassword = input.type === 'password';
+
+        input.type = isPassword ? 'text' : 'password';
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    }
+
+
+
+
+    function RegisterUser() {
+        event.preventDefault();
+        debugger;
+        const UserData = {
+            UserName: $("#UserName").val(),
+            Email: $("#email").val(),
+            Phone: $("#phone").val(),
+            UserPassword: $("#password").val(),
+        }
+        var password = $("#password").val();
+        var confirmPassword = $("#confirmPassword").val();
+        if (password != confirmPassword) {
+           
+            debugger;
+            showToastifyMessage("Password and Confirm password don't match", "pass")
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("RegisterUser", "Register")",
+            contentType: "application/json",
+            data: JSON.stringify(UserData),
+            success: function (response) {
+                debugger;
+                Toastify({
+                    text: response.message,
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: response.status === "success" ? "green" : "red",
+                    close: true
+                }).showToast();
+            },
+            error: function () {
+                Toastify({
+                    text: "Something went wrong. Please try again.",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "red",
+                    close: true
+                }).showToast();
+            }
+        });
+    }
+</script>
