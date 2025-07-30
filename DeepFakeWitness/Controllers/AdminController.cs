@@ -8,5 +8,17 @@ namespace DeepFakeWitness.Controllers
         {
             return View();
         }
+        public IActionResult Users()
+        {
+            return View();
+        } 
+        public IActionResult Profile()
+        {
+            return View();
+        }  
+        public IActionResult RegisterNewAdmin()
+        {
+            return View();
+        }
     }
 }

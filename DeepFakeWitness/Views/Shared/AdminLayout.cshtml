@@ -8,24 +8,24 @@
     <meta name="author" content="" />
     <title>Dashtreme Admin - Free Dashboard for Bootstrap 4 by Codervent</title>
     <!-- loader-->
-    <link href="assets/css/pace.min.css" rel="stylesheet" />
-    <script src="assets/js/pace.min.js"></script>
+    @* <link href="~/assets/css/pace.min.css" rel="stylesheet" /> *@
+    <script src="~/assets/js/pace.min.js"></script>
     <!--favicon-->
     <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
     <!-- Vector CSS -->
-    <link href="assets/plugins/vectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet" />
+    <link href="~/assets/plugins/vectormap/jquery-jvectormap-2.0.2.css" rel="stylesheet" />
     <!-- simplebar CSS-->
-    <link href="assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
+    <link href="~/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
     <!-- Bootstrap core CSS-->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet" />
     <!-- animate CSS-->
-    <link href="assets/css/animate.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/animate.css" rel="stylesheet" type="text/css" />
     <!-- Icons CSS-->
-    <link href="assets/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/icons.css" rel="stylesheet" type="text/css" />
     <!-- Sidebar CSS-->
-    <link href="assets/css/sidebar-menu.css" rel="stylesheet" />
+    <link href="~/assets/css/sidebar-menu.css" rel="stylesheet" />
     <!-- Custom Style-->
-    <link href="assets/css/app-style.css" rel="stylesheet" />
+    <link href="~/assets/css/app-style.css" rel="stylesheet" />
 
 </head>
 
@@ -45,54 +45,54 @@
             <ul class="sidebar-menu do-nicescrol">
                 <li class="sidebar-header">MAIN NAVIGATION</li>
                 <li>
-                    <a href="index.html">
+                    <a asp-controller="Admin" asp-action="Dashboard">
                         <i class="zmdi zmdi-view-dashboard"></i> <span>Dashboard</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="icons.html">
-                        <i class="zmdi zmdi-invert-colors"></i> <span>UI Icons</span>
+                    <a asp-controller="Admin" asp-action="Users">
+                        <i class="zmdi zmdi-invert-colors"></i> <span>Users</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="forms.html">
-                        <i class="zmdi zmdi-format-list-bulleted"></i> <span>Forms</span>
+                    <a asp-controller="Admin" asp-action="Messages">
+                        <i class="zmdi zmdi-format-list-bulleted"></i> <span>Messages</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="tables.html">
+                    <a href="#" id="logoutBtn">
                         <i class="zmdi zmdi-grid"></i> <span>Tables</span>
                     </a>
                 </li>
 
                 <li>
-                    <a href="calendar.html">
+                    <a href="#">
                         <i class="zmdi zmdi-calendar-check"></i> <span>Calendar</span>
                         <small class="badge float-right badge-light">New</small>
                     </a>
                 </li>
 
                 <li>
-                    <a href="profile.html">
+                    <a asp-controller="Admin" asp-action="Profile" >
                         <i class="zmdi zmdi-face"></i> <span>Profile</span>
                     </a>
                 </li>
 
-                <li>
-                    <a href="login.html" target="_blank">
-                        <i class="zmdi zmdi-lock"></i> <span>Login</span>
-                    </a>
-                </li>
+               
 
                 <li>
-                    <a href="register.html" target="_blank">
+                    <a asp-controller="Admin" asp-action="RegisterNewAdmin" target="_blank">
                         <i class="zmdi zmdi-account-circle"></i> <span>Registration</span>
                     </a>
                 </li>
-
+                <li>
+                    <a href="#" target="_blank">
+                        <i class="zmdi zmdi-lock"></i> <span>Logout</span>
+                    </a>
+                </li>
                 <li class="sidebar-header">LABELS</li>
                 <li><a href="javaScript:void();"><i class="zmdi zmdi-coffee text-danger"></i> <span>Important</span></a></li>
                 <li><a href="javaScript:void();"><i class="zmdi zmdi-chart-donut text-success"></i> <span>Warning</span></a></li>
@@ -169,6 +169,7 @@
             </nav>
         </header>
         <!--End topbar header-->
+        <div class="clearfix"></div>
         @RenderBody()
         <!--Start Back To Top Button-->
         <a href="javaScript:void();" class="back-to-top"><i class="fa fa-angle-double-up"></i> </a>
@@ -222,25 +223,46 @@
 
     </div><!--End wrapper-->
     <!-- Bootstrap core JavaScript-->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/popper.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/popper.min.js"></script>
+    <script src="~/assets/js/bootstrap.min.js"></script>
 
     <!-- simplebar js -->
-    <script src="assets/plugins/simplebar/js/simplebar.js"></script>
+    <script src="~/assets/plugins/simplebar/js/simplebar.js"></script>
     <!-- sidebar-menu js -->
-    <script src="assets/js/sidebar-menu.js"></script>
-    <!-- loader scripts -->
-    <script src="assets/js/jquery.loading-indicator.js"></script>
+ @*    <script src="~/assets/js/sidebar-menu.js"></script>
+    <!-- loader scripts --> *@
+    <script src="~/assets/js/jquery.loading-indicator.js"></script>
     <!-- Custom scripts -->
-    <script src="assets/js/app-script.js"></script>
+    <script src="~/assets/js/app-script.js"></script>
     <!-- Chart js -->
 
-    <script src="assets/plugins/Chart.js/Chart.min.js"></script>
+    <script src="~/assets/plugins/Chart.js/Chart.min.js"></script>
 
     <!-- Index js -->
-    <script src="assets/js/index.js"></script>
+    <script src="~/assets/js/index.js"></script>
 
+    <script>
+        $(document).ready(function () {
+            $('#logoutBtn').click(function (e) {
+                e.preventDefault();
 
+                $.ajax({
+                    url: '/Login/LogoutUser', // update this if your controller is named differently
+                    type: 'POST',
+                    success: function (response) {
+                        if (response.status === 'success') {
+                            window.location.href = '/Login/Login'; // redirect after logout
+                        } else {
+                            alert(response.message);
+                        }
+                    },
+                    error: function () {
+                        alert('Logout failed due to server error.');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
