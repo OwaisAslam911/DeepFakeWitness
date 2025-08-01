@@ -59,13 +59,30 @@ namespace DeepFakeWitness.Controllers
             }
             return View();  
            
+        } 
+        public IActionResult DeactiveUsers()
+        {
+           
+     
+            return View();  
+           
         }
-         public JsonResult GetUsers(Users users)
+        public JsonResult GetDeactiveUsers(Users users)
+        {
+            var conn = config.GetConnectionString("dbcs");
+            using (var connection = new SqlConnection(conn))
+            {
+                string UserQuery = "select * from Users u join UserRoles ur on ur.UserId = u.UserId join Roles r on ur.RoleId = r.RoleId Where IsActive = 0";
+                var UserList = connection.Query(UserQuery).ToList(); // or map to a DTO if preferred
+                return Json(new { data = UserList });
+            }
+        }
+        public JsonResult GetUsers(Users users)
         {
             var conn = config.GetConnectionString("dbcs");
             using (var connection = new SqlConnection (conn))
             {
-                string UserQuery = "select * from Users u join UserRoles ur on ur.UserId = u.UserId join Roles r on ur.RoleId = r.RoleId";
+                string UserQuery = "select * from Users u join UserRoles ur on ur.UserId = u.UserId join Roles r on ur.RoleId = r.RoleId Where IsActive = 1";
                 var UserList = connection.Query(UserQuery).ToList(); // or map to a DTO if preferred
                 return Json(new { data = UserList });
             }
@@ -111,6 +128,7 @@ namespace DeepFakeWitness.Controllers
                 using (var connection = new SqlConnection(conn))
                 {
                     var parameter = new DynamicParameters();
+                    parameter.Add("@UserId", user.UserId);
                     parameter.Add("@UserName", user.UserName);
                     parameter.Add("@Email", user.Email);
                     parameter.Add("@UserPassword", user.UserPassword);
@@ -129,6 +147,40 @@ namespace DeepFakeWitness.Controllers
             {
                 return Json(new { status = "error", message = ex.Message });
             }
+        }
+        [HttpPost]
+        public JsonResult SoftDeleteUser(int userId)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(config.GetConnectionString("dbcs")))
+                {
+                    using (SqlCommand cmd = new SqlCommand("SoftDeleteUser", con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@UserId", userId);
+                        con.Open();
+
+                        using (var reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                return Json(new
+                                {
+                                    status = reader["Status"].ToString(),
+                                    message = reader["Message"].ToString()
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", message = ex.Message });
+            }
+
+            return Json(new { status = "error", message = "Unexpected error occurred." });
         }
 
 
