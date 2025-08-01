@@ -36,6 +36,7 @@ namespace DeepFakeWitness.Controllers
 
                     if (result != null)
                     {
+                        HttpContext.Session.SetInt32("UserId", result.UserId);
                         HttpContext.Session.SetString("UserEmail", result.Email);
                         HttpContext.Session.SetString("UserRole", result.RoleName);
                         return Json(new

@@ -1,9 +1,116 @@
-﻿@{
+﻿
+@{
     Layout = "AdminLayout";
 }
 @{
     ViewData["Title"] = "Profile";
 }
+<div class="content-wrapper">
+    <div class="container-fluid mt-4">
+        <ul class="nav nav-pills mb-3" id="profileTab" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="view-tab" data-bs-toggle="pill" data-bs-target="#view" type="button" role="tab">View Profile</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="edit-tab" data-bs-toggle="pill" data-bs-target="#edit" type="button" role="tab">Edit Profile</button>
+            </li>
+        </ul>
 
-<h1>Profile</h1>
+        <div class="tab-content">
+            <!-- View Profile Tab -->
+            <div class="tab-pane fade show active" id="view" role="tabpanel">
+                <div class="card">
+                    <div class="card-body" id="profileData">
+                        <!-- AJAX-loaded user data goes here -->
+                    </div>
+                </div>
+            </div>
 
+            <!-- Edit Profile Tab -->
+            <div class="tab-pane fade" id="edit" role="tabpanel">
+                <form id="editProfileForm">
+                    <input type="hidden" id="userId" />
+                    <div class="mb-3">
+                        <label>Username</label>
+                        <input type="text" id="editUsername" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" id="editEmail" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label>Phone</label>
+                        <input type="text" id="editPhone" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label>Role</label>
+                        <input type="text" id="editRole" class="form-control" disabled />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/js/bootstrap.min.js"></script>
+
+
+<script>
+    $(document).ready(function () { 
+        loadUserProfile();
+
+        $("#editProfileForm").submit(function (e) {
+            e.preventDefault();
+
+            const updatedUser = {
+                Id: $('#userId').val(),
+                Username: $('#editUsername').val(),
+                Email: $('#editEmail').val(),
+                Phone: $('#editPhone').val()
+            };
+
+            $.ajax({
+                url: '/Admin/UpdateProfile',
+                type: 'POST',
+                data: updatedUser,
+                success: function (res) {
+                    alert(res.message);
+                    loadUserProfile(); // reload profile
+                }
+            });
+        });
+    })
+    function loadUserProfile() {
+        debugger;
+        $.ajax({
+            url: '/Admin/GetProfile',
+            method: 'GET',
+            success: function (user) {
+                debugger;
+                const u = user.data; // get actual user object
+
+                $("#profileData").html(`
+            <h4>User Profile</h4>
+            <p><strong>Username:</strong> ${u.userName}</p>
+            <p><strong>Email:</strong> ${u.email}</p>
+            <p><strong>Phone:</strong> ${u.phone}</p>
+            <p><strong>Role:</strong> ${u.roleName}</p>
+            <p><strong>IsActive:</strong> ${u.isActive}</p>
+            <p><strong>RoleId:</strong> ${u.roleId}</p>
+            <p><strong>Password:</strong> ${u.userPassword}</p>
+            <p><strong>UserId:</strong> ${u.userId}</p>
+        `);
+
+                // Populate edit form
+                $('#userId').val(user.id);
+                $('#editUsername').val(user.userName);
+                $('#editEmail').val(user.email);
+                $('#editPhone').val(user.phone);
+                $('#editRole').val(user.roleName);
+            }
+        });
+    }
+</script>

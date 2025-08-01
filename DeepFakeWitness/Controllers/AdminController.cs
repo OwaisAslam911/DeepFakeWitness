@@ -188,7 +188,57 @@ namespace DeepFakeWitness.Controllers
         public IActionResult Profile()
         {
             return View();
-        }  
+        }
+
+
+        [HttpGet]
+        public IActionResult GetProfile()
+        {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+                return Json(new { status = "error", message = "User not logged in" });
+
+            var user = GetUserById(userId.Value);
+            if (user == null)
+                return Json(new { status = "error", message = "User not found" });
+
+            return Json(new { status = "success", data = user });
+        }
+
+        private Users GetUserById(int userId)
+        {
+            Users user = null;
+
+            using (SqlConnection conn = new SqlConnection(config.GetConnectionString("dbcs")))
+            {
+                string query = @"SELECT u.UserId, u.Username, u.Email, u.Phone, r.RoleName
+                             FROM Users u
+                             JOIN UserRoles ur ON u.UserId = ur.UserId
+                             JOIN Roles r ON ur.RoleId = r.RoleId
+                             WHERE u.UserId = @UserId";
+
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@UserId", userId);
+
+                conn.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    user = new Users
+                    {
+                        UserId = Convert.ToInt32(reader["UserId"]),
+                        UserName = reader["Username"].ToString(),
+                        Email = reader["Email"].ToString(),
+                        Phone = reader["Phone"].ToString(),
+                        RoleName = reader["RoleName"].ToString()
+                    };
+                }
+            }
+
+            return user;
+        }
         public IActionResult RegisterNewAdmin()
         {
             return View();
