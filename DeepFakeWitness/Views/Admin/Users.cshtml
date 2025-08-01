@@ -4,6 +4,312 @@
 @{
     ViewData["Title"] = "Users";
 }
+@* <link href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.css" rel="stylesheet" /> *@
+@* <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet" /> *@
+
+<div class="content-wrapper">
+    <div class="container-fluid">
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">Vertical Form</div>
+                        <hr>
+                        <form>
+                            <input type="text" id="UserId" name="UserId" value="" />
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="input-1" class="form-label">Name</label>
+                                    <input type="text" class="form-control" id="UserName" placeholder="Enter Your Name">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="input-2" class="form-label">Email</label>
+                                    <input type="text" class="form-control" id="email" placeholder="Enter Your Email Address">
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="input-3" class="form-label">Phone</label>
+                                    <input type="text" class="form-control" id="phone" placeholder="Enter Your Phone Number">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="input-3" class="form-label">Roles</label>
+                                    <select class="form-select" id="inputRole" name="Role" style="background-color: transparent; color:white;">
+                                        <option value="">-- Select Role --</option>
+                                        @* <option value="Admin">Admin</option>
+                                        <option value="User">User</option> *@
+                                        @foreach (var roles in ViewBag.UserRoles)
+                                        {
+                                            <option value="@roles.RoleId">@roles.RoleName</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="input-3" class="form-label">Active or not</label>
+                                    <select class="form-select" id="inputRole" name="Role" style="background-color: transparent; color:white;">
+                                        <option value="">-- Select Role --</option>
+                                        <option value="true">Activate</option>
+                                        <option value="false">Deactiveate</option>
+                                       
+                                    </select>
+                                </div>
+
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="input-4" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="password" placeholder="Enter Password">
+                                </div>
+                            
+
+                                <div class="col-md-6">
+                                    <label for="input-5" class="form-label">Confirm Password</label>
+                                    <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password">
+                                </div>
+                                <div class="col-md-6"></div> <!-- Empty column to keep layout even -->
+                            </div>
+
+                            <div class="row">
+                                <div class="col text-center">
+                                    <button type="submit" onclick="RegisterUser()" id="registerUser" class="btn btn-light px-5">
+                                        <i class="icon-lock"></i> Register
+                                    </button>
+                                    <button type="submit" style="display: none;"  onclick="UpdateUser()" id="updateUser" class="btn btn-light px-5">
+                                        <i class="icon-lock"></i> Update
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+            
+        </div><!--End Row-->
+        <div class="card p-2">
+    <table id="example" class="table table-striped ">
+    <thead>
+        <tr>
+                    <th>UserId</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Role Name</th>
+                    <th>Is Active</th>
+                    <th>Actions</th>
+
+        </tr>
+    </thead>
+    
+    <tfoot>
+        <tr>
+            <th>UserId</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Role Name</th>
+            <th>Is Active</th>
+            <th>Actions</th>
+        </tr>
+    </tfoot>
+</table>
+        </div>
+            </div>
+            </div>
+            <!-- JS libraries (must load first) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
+<script src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+
+<!-- Initialize DataTable -->
+
+    <script>
+        $(document).ready(function () {
+            debugger;
+            $('#example').DataTable({
+                ajax: {
+                    url: '/Admin/GetUsers',
+                    dataSrc: 'data'
+                },
+                columns: [
+                    { data: 'UserId' },
+                    { data: 'UserName' },
+                    { data: 'Email' },
+                    { data: 'Phone' },
+                    { data: 'RoleName' },
+                    { data: 'IsActive' },
+                    {
+                        data: 'UserId',
+                        render: function (data, type, row) {
+                        const rowData = JSON.stringify(row).replace(/'/g, "&apos;");
+                        return `
+            <button class="btn btn-sm btn-info edit-btn"
+                    data-user='${rowData}'>
+                <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="btn btn-sm btn-danger" onclick="softDeleteUser(${row.UserId})">
+                <i class="fa-solid fa-trash"></i>
+            </button>`;
+                    }
+                    }
+                ]
+            });
+        });
+    $(document).on('click', '.edit-btn', function () {
+        $("#registerUser").hide();
+        $("#updateUser").show();
+
+        const rowDataStr = $(this).attr('data-user'); // safely get the string
+        const row = JSON.parse(rowDataStr); // now it's valid JSON
+
+        // Populate form fields
+        
+        $('#UserId').val(row.UserId);
+        $('#UserName').val(row.UserName);
+        $('#email').val(row.Email);
+        $('#phone').val(row.Phone);
+        $('#inputRole').val(row.RoleId);
+
+        // You can optionally add hidden input for UserId if needed
+        $('#password').val('');
+        $('#confirmPassword').val('');
+    });
+
+
+    function editUser(rowDataStr) {
+        debugger;
+        const row = JSON.parse(JSON.parse(rowDataStr));
+
+        $('#UserName').val(row.UserName);
+        $('#email').val(row.Email);
+        $('#phone').val(row.Phone);
+        $('#password').val(''); // keep empty
+        $('#confirmPassword').val('');
+        $('#inputRole').val(row.RoleId); // ensure RoleId is returned in AJAX response
+    }
+
+
+    </script>
+<script src="~/js/Toastify.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script>
+    function togglePassword(inputId, icon) {
+        const input = document.getElementById(inputId);
+        const isPassword = input.type === 'password';
+
+        input.type = isPassword ? 'text' : 'password';
+        icon.classList.toggle('fa-eye');
+        icon.classList.toggle('fa-eye-slash');
+    }
 
 
 
+
+    function RegisterUser() {
+        event.preventDefault();
+        debugger;
+        const UserData = {
+            UserName: $("#UserName").val(),
+            Email: $("#email").val(),
+            Phone: $("#phone").val(),
+            UserPassword: $("#password").val(),
+            RoleId: $("#inputRole").val(),
+        }
+        var role = $("#inputRole").val();
+        if (role == '' || role == null) {
+            showToastifyMessage("Please Enter Role", "pass")
+            return;
+        }
+        var password = $("#password").val();
+        var confirmPassword = $("#confirmPassword").val();
+        if (password != confirmPassword) {
+
+            debugger;
+            showToastifyMessage("Password and Confirm password don't match", "pass")
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("RegisterUser", "Admin")",
+            contentType: "application/json",
+            data: JSON.stringify(UserData),
+            success: function (response) {
+                debugger;
+                Toastify({
+                    text: response.message,
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: response.status === "success" ? "green" : "red",
+                    close: true
+                }).showToast();
+            },
+            error: function () {
+                Toastify({
+                    text: "Something went wrong. Please try again.",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "red",
+                    close: true
+                }).showToast();
+            }
+        });
+    }
+
+
+    function UpdateUser() {
+        event.preventDefault();
+        debugger;
+        const UserData = {
+            UserName: $("#UserName").val(),
+            Email: $("#email").val(),
+            Phone: $("#phone").val(),
+            UserPassword: $("#password").val(),
+            RoleId: $("#inputRole").val(),
+        }
+        var role = $("#inputRole").val();
+        if (role == '' || role == null) {
+            showToastifyMessage("Please Enter Role", "pass")
+            return;
+        }
+        var password = $("#password").val();
+        var confirmPassword = $("#confirmPassword").val();
+        if (password != confirmPassword) {
+
+            debugger;
+            showToastifyMessage("Password and Confirm password don't match", "pass")
+            return;
+        }
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("UpdateUser", "Admin")",
+            contentType: "application/json",
+            data: JSON.stringify(UserData),
+            success: function (response) {
+                debugger;
+                Toastify({
+                    text: response.message,
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: response.status === "success" ? "green" : "red",
+                    close: true
+                }).showToast();
+            },
+            error: function () {
+                Toastify({
+                    text: "Something went wrong. Please try again.",
+                    duration: 3000,
+                    gravity: "top",
+                    position: "right",
+                    backgroundColor: "red",
+                    close: true
+                }).showToast();
+            }
+        });
+    }
+</script>
