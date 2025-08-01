@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Dapper;
 using DeepFakeWitness.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Dapper;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using System.Data;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace DeepFakeWitness.Controllers
 {
@@ -38,11 +39,6 @@ namespace DeepFakeWitness.Controllers
                 return View();
             }
         }
-
-
-
-
-
 
 
 
@@ -187,7 +183,36 @@ namespace DeepFakeWitness.Controllers
 
         public IActionResult Profile()
         {
+            int? userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                // Not logged in
+                return RedirectToAction("Login", "Login");
+            }
+
+            var userRole = GetUserRole(userId.Value);
+
+            if (userRole != "Admin")
+            {
+                // Not an admin
+                return RedirectToAction("Login", "Login"); // or anywhere appropriate
+            }
+
             return View();
+        }
+        private string GetUserRole(int userId)
+        {
+            using (var connection = new SqlConnection(config.GetConnectionString("dbcs")))
+            {
+                string query = @"SELECT r.RoleName
+                         FROM Users u
+                         JOIN UserRoles ur ON u.UserId = ur.UserId
+                         JOIN Roles r ON ur.RoleId = r.RoleId
+                         WHERE u.UserId = @UserId";
+
+                return connection.QueryFirstOrDefault<string>(query, new { UserId = userId });
+            }
         }
 
 
