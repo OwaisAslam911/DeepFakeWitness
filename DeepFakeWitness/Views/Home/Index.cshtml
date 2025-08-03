@@ -2,3 +2,60 @@
     ViewData["Title"] = "Home Page";
 }
 
+<div class="container-fluid main-content">
+    <div class="row justify-content-center g-4">
+        <!-- Upload Card -->
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white fw-bold">
+                    Upload Image for Deepfake Detection
+                </div>
+                <div class="card-body">
+                    <form id="uploadForm" method="post" enctype="multipart/form-data" action="/Home/CheckImage">
+                        <div class="mb-3 text-center">
+                            <img id="imagePreview" src="#" alt="Preview" class="img-fluid rounded border shadow-sm"
+                                 style="display: none;" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Select Image</label>
+                            <input type="file" name="image" id="image" class="form-control" accept="image/*"
+                                   required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Check</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Card -->
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white fw-bold">
+                    Detection Result
+                </div>
+                <div class="card-body">
+                    <h5 id="resultText" class="text-center">No result yet.</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.getElementById("image").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById("imagePreview");
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = "none";
+        }
+    });
+ </script>
