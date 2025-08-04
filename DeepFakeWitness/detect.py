@@ -37,7 +37,7 @@ def detect_deepfake(image_path):
             prediction = torch.sigmoid(output).item()  # Scalar probability
 
         # Threshold: >0.5 is Deepfake, <=0.5 is Real
-        return "Deepfaked12" if prediction > 0.5 else "Real"
+        return "Deepfaked" if prediction > 0.5 else "Real"
 
     except Exception as e:
         return f"Error: {str(e)}"
