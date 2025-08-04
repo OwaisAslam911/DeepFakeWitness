@@ -11,4 +11,12 @@
         public string RoleName { get; set; }
         public int RoleId { get; set; }
     }
+
+    public class UserImage
+    {
+        public int Id { get; set; }
+        public string FileName { get; set; }
+        public string UserId { get; set; }
+        public string DetectionResult { get; set; } // Optional
+    }
 }

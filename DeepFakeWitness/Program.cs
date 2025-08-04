@@ -1,7 +1,14 @@
+using Microsoft.EntityFrameworkCore;
+using DeepFakeWitness.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<DeepFakeWitnessContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("dbcs")));
+
+
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();

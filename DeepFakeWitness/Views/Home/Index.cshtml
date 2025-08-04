@@ -34,7 +34,16 @@
                     Detection Result
                 </div>
                 <div class="card-body">
-                    <h5 id="resultText" class="text-center">No result yet.</h5>
+                    <h5 id="resultText" class="text-center">
+                        @if (ViewBag.Result != null)
+                        {
+                            @ViewBag.Result
+                        }
+                        else
+                        {
+                            <text>No result yet.</text>
+                        }
+                    </h5>
                 </div>
             </div>
         </div>
