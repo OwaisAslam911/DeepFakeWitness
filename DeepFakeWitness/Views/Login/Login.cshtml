@@ -127,6 +127,12 @@
         event.preventDefault();
         var email = $("#email").val();
         var password = $("#password").val();
+        const passwordRegex = /^(?=.*[0-9]).{8,}$/;
+
+        if (!passwordRegex.test(password)) {
+            showToastifyMessage("Password must be at least 8 characters and contain at least one number.", "error");
+            return;
+        }
         if (email == null || email == '') {
             showToastifyMessage("Please Enter Email", "error");
         } else if (password == null || password == '') {
@@ -148,7 +154,7 @@
                             if (response.role === "User") {
                                 window.location.href = "/Home/Index";
                             } else if (response.role === "Admin") {
-                                window.location.href = "/Home/Privacy";
+                                window.location.href = "/Admin/Dashboard";
                             } else {
                                 window.location.href = "/Home/Index";
                             }

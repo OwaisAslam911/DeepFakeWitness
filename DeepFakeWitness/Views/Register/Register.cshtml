@@ -166,13 +166,36 @@
     function RegisterUser() {
         event.preventDefault();
         debugger;
+        const userName = $("#UserName").val().trim();
+        const email = $("#email").val().trim();
+        const phone = $("#phone").val().trim();
+        const password = $("#password").val();
+
+        const userNameRegex = /^[a-zA-Z0-9_]{3,20}$/;
+        const phoneRegex = /^\d{10,15}$/;
+        const passwordRegex = /^(?=.*[0-9]).{8,}$/;
+
+
+        if (!userNameRegex.test(userName)) {
+            showToastifyMessage("Invalid username. Must be 3–20 alphanumeric characters or underscores.", "error");
+            return;
+        }
+
+        if (!passwordRegex.test(password)) {
+            showToastifyMessage("Password must be at least 8 characters and contain at least one number.", "error");
+            return;
+        }
+
+        if (phone && !phoneRegex.test(phone)) {
+            showToastifyMessage("Phone must be 10–15 digits.", "error");
+            return;
+        }
         const UserData = {
             UserName: $("#UserName").val(),
             Email: $("#email").val(),
             Phone: $("#phone").val(),
             UserPassword: $("#password").val(), 
         }
-        var password = $("#password").val();
         var confirmPassword = $("#confirmPassword").val();
         if (password != confirmPassword) {
            
@@ -195,6 +218,7 @@
                     backgroundColor: response.status === "success" ? "green" : "red",
                     close: true
                 }).showToast();
+                window.location.href = "/Login/Login";
             },
             error: function () {
                 Toastify({
