@@ -106,11 +106,18 @@
                     render: function (data, type, row) {
                         const rowData = JSON.stringify(row).replace(/'/g, "&apos;");
                         return `
-                            <button class="btn btn-sm btn-info edit-btn"
-                                    data-user='${rowData}'>
-                                <i class="fa-solid fa-pen-to-square"></i>
-                            </button>
-                                <button class="btn btn-sm btn-danger" onclick="softDeleteUser(${row.UserId})">
+                    <button class="btn btn-sm btn-success edit-btn"
+                        onclick="ActiveUser(${row.UserId})
+                    data-user='(${rowData})'
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Activate User">
+                <i class="fa-solid fa-user"></i>
+            </button>
+                    <button class="btn btn-sm btn-danger" onclick="DeleteUser(${row.UserId})
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title="Delete User">
                                 <i class="fa-solid fa-trash"></i>
                             </button>`;
                     }
@@ -119,7 +126,12 @@
         });
     }
 
+        function DeleteUser(userId) {
+            if (!confirm("Are You Saure You Want to Permenantly Delete This User"))
+                return;
 
+
+        }
 
 
     // $(document).on('click', '.edit-btn', function () {
