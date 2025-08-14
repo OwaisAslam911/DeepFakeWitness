@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@inject IHttpContextAccessor HttpContextAccessor
+
+@{
+    var role = HttpContextAccessor.HttpContext.Session.GetString("UserRole");
+    var sessionSet = HttpContextAccessor.HttpContext.Session.GetString("UserId");
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -64,7 +70,28 @@
                     <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">About</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Profile</a></li>
+                    @if(role == "Admin")
+                    { 
+                    <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Dashboard">Admin</a></li>
+                    }
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="~/uploads/0cab2fa9-daff-40eb-a57d-343d7d0eec95.jpg" style="width:20px; height:20px;" alt="Alternate Text" />
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                            <li><a class="dropdown-item" href="#">Previous Results</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            @if(sessionSet == null || sessionSet == "")
+                            {
+                            <li><a class="dropdown-item" asp-controller="Login" asp-action="Login">Login</a></li>
+
+                            }else{
+                                <li><a class="dropdown-item" id="logoutBtn">Logout</a></li>
+
+                            }
+                        </ul>
+                    </li>
                 </ul>
             </div>
         </div>

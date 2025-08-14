@@ -1,7 +1,7 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    Layout = "_Layout";
 }
-
+<div class="content-wrapper">
 <div class="container-fluid main-content">
     <div class="row justify-content-center g-4">
         <!-- Upload Card -->
@@ -11,7 +11,8 @@
                     Upload Image for Deepfake Detection
                 </div>
                 <div class="card-body">
-                    <form id="uploadForm" method="post" enctype="multipart/form-data" action="/Home/CheckImage">
+                     <form id="uploadForm" method="post" enctype="multipart/form-data" action="/Home/CheckImage"> 
+                  
                         <div class="mb-3 text-center">
                             <img id="imagePreview" src="#" alt="Preview" class="img-fluid rounded border shadow-sm"
                                  style="display: none;" />
@@ -21,7 +22,7 @@
                             <input type="file" name="image" id="image" class="form-control" accept="image/*"
                                    required>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Check</button>
+                        <button type="submit" onclick="CheckResult()" class="btn btn-primary w-100" >Check</button>
                     </form>
                 </div>
             </div>
@@ -35,23 +36,26 @@
                 </div>
                 <div class="card-body">
                     <h5 id="resultText" class="text-center">
-                        @if (ViewBag.Result != null)
+                   @*      @if (ViewBag.Result != null)
                         {
                             @ViewBag.Result
                         }
                         else
                         {
                             <text>No result yet.</text>
-                        }
+                        } *@
                     </h5>
                 </div>
             </div>
         </div>
     </div>
 </div>
+</div>
 
-
+<script src="~/assets/js/jquery.min.js"></script>
 <script>
+
+
     document.getElementById("image").addEventListener("change", function (event) {
         const file = event.target.files[0];
         const preview = document.getElementById("imagePreview");
@@ -67,4 +71,41 @@
             preview.style.display = "none";
         }
     });
+    // $("#uploadForm").submit(function (e) {
+    //     debugger;
+    //     e.preventDefault();
+    //     CheckResult();
+    // });
+    // function CheckResult() {
+    //     var imageExist = $("#image").val();
+    //     if (imageExist === "") {
+    //         showToastifyMessage("Please select an image", "error");
+    //         return;
+    //     }
+
+    //     var formData = new FormData();
+    //     formData.append("image", $("#image")[0].files[0]);
+    //     debugger;
+    //     $.ajax({
+    //         url: '/Home/CheckImage', // adjust if your route is different
+    //         type: 'POST',
+    //         data: formData,
+    //         processData: false, // important for FormData
+    //         contentType: false, // important for FormData
+    //         success: function (response) {
+    //             debugger;
+    //             if (response.success) {
+    //                 debugger;
+    //                 $("#resultText").text(response.message);
+    //             } else {
+    //                 $("#resultText").text(response.message);
+    //             }
+    //         },
+    //         // error: function (xhr, status, error) {
+    //         //     console.error(error);
+    //         //     $("#resultText").text("An error occurred while checking the image.");
+    //         // }
+    //     });
+    // }
+
  </script>
