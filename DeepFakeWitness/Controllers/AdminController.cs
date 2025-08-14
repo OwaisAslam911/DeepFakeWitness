@@ -44,7 +44,7 @@ namespace DeepFakeWitness.Controllers
 
         public IActionResult Users()
         {
-           
+
             var conn = config.GetConnectionString("dbcs");
             using (var connection = new SqlConnection(conn))
             {
@@ -53,15 +53,15 @@ namespace DeepFakeWitness.Controllers
                 ViewBag.UserRoles = UserRoles;
 
             }
-            return View();  
-           
-        } 
+            return View();
+
+        }
         public IActionResult DeactiveUsers()
         {
-           
-     
-            return View();  
-           
+
+
+            return View();
+
         }
         public JsonResult GetDeactiveUsers(Users users)
         {
@@ -76,7 +76,7 @@ namespace DeepFakeWitness.Controllers
         public JsonResult GetUsers(Users users)
         {
             var conn = config.GetConnectionString("dbcs");
-            using (var connection = new SqlConnection (conn))
+            using (var connection = new SqlConnection(conn))
             {
                 string UserQuery = "select * from Users u join UserRoles ur on ur.UserId = u.UserId join Roles r on ur.RoleId = r.RoleId Where IsActive = 1";
                 var UserList = connection.Query(UserQuery).ToList(); // or map to a DTO if preferred
@@ -84,7 +84,7 @@ namespace DeepFakeWitness.Controllers
             }
         }
         [HttpPost]
-         public async Task<IActionResult> RegisterUser([FromBody]Users user)
+        public async Task<IActionResult> RegisterUser([FromBody] Users user)
         {
             try
             {
@@ -112,9 +112,9 @@ namespace DeepFakeWitness.Controllers
             {
                 return Json(new { status = "error", message = ex.Message });
             }
-        } 
+        }
         [HttpPost]
-         public async Task<IActionResult> UpdateUser([FromBody]Users user)
+        public async Task<IActionResult> UpdateUser([FromBody] Users user)
         {
             try
             {
@@ -268,5 +268,70 @@ namespace DeepFakeWitness.Controllers
         {
             return View();
         }
+
+
+        [HttpPost]
+        public JsonResult PermenantlyDeleteUser(int userId)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(config.GetConnectionString("dbcs")))
+                {
+                    string DeleteUserRoles = "Delete From UserRoles Where UserId = @userId";
+                    var DeleteRole = con.Execute(DeleteUserRoles, new {userId = userId});
+                    if(DeleteRole > 0)
+                    {
+
+                    string Query = "Delete From Users Where UserId = @userId";
+                    var result = con.Execute(Query, new {userId = userId});
+                    if(result >0 )
+                    {
+                        return Json(new { status = "success", message = "User Deleted Permanently" });
+
+                    }
+                    else
+                    {
+                        return Json(new { status = "error", message = "No user found with the given ID." });
+                    }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", message = ex.Message });
+            }
+
+            return Json(new { status = "error", message = "Unexpected error occurred." });
+        }     public JsonResult ActiveUser(int userId)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(config.GetConnectionString("dbcs")))
+                {
+                    string Active = "Update Users set IsActive = 1 where UserId = @userId";
+                    var result = con.Execute(Active, new {userId = userId});
+                    if(result >0 )
+                    {
+                        return Json(new { status = "success", message = "User Activated successfully" });
+
+                    }
+                    else
+                    {
+                        return Json(new { status = "error", message = "No user found with the given ID." });
+                    }
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { status = "error", message = ex.Message });
+            }
+
+            return Json(new { status = "error", message = "Unexpected error occurred." });
+        }
+
+
+
+
     }
 }
