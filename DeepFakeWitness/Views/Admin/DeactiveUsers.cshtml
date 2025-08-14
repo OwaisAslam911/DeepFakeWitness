@@ -86,6 +86,10 @@
     function loadUsersTable() {
         $('#example').DataTable().clear().destroy(); // Clear any existing instance first
         $('#example').DataTable({
+            autoWidth: false,
+            columnDefs: [
+                { targets: '_all', className: 'text-wrap' } // enable wrapping
+            ],
             ajax: {
                 url: '/Admin/GetDeactiveUsers',
                 dataSrc: 'data'

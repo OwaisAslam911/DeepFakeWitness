@@ -79,8 +79,8 @@
 
             
         </div><!--End Row-->
-        <div class="card">
-    <table id="example" class="table table-striped ">
+        <div class="card p-2">
+            <table id="example" class="table table-striped " style="width:100%">
     <thead>
         <tr>
                     <th>UserId</th>
@@ -119,40 +119,17 @@
 
     <script>
         $(document).ready(function () {
-            // debugger;
-            // $('#example').DataTable({
-            //     ajax: {
-            //         url: '/Admin/GetUsers',
-            //         dataSrc: 'data'
-            //     },
-            //     columns: [
-            //         { data: 'UserId' },
-            //         { data: 'UserName' },
-            //         { data: 'Email' },
-            //         { data: 'Phone' },
-            //         { data: 'RoleName' },
-            //         { data: 'IsActive' },
-            //         {
-            //             data: 'UserId',
-            //             render: function (data, type, row) {
-            //             const rowData = JSON.stringify(row).replace(/'/g, "&apos;");
-            //             return `
-            // <button class="btn btn-sm btn-info edit-btn"
-            //         data-user='${rowData}'>
-            //     <i class="fa-solid fa-pen-to-square"></i>
-            // </button>
-            // <button class="btn btn-sm btn-danger" onclick="softDeleteUser(${row.UserId})">
-            //     <i class="fa-solid fa-trash"></i>
-            // </button>`;
-            //         }
-            //         }
-            //     ]
-            // });
+           
             loadUsersTable();
         });
     function loadUsersTable() {
         $('#example').DataTable().clear().destroy(); // Clear any existing instance first
         $('#example').DataTable({
+            
+            autoWidth: false,
+            columnDefs: [
+                { targets: '_all', className: 'text-wrap' } // enable wrapping
+            ],
             ajax: {
                 url: '/Admin/GetUsers',
                 dataSrc: 'data'
