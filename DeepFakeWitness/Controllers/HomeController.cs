@@ -167,6 +167,10 @@ namespace DeepFakeWitness.Controllers
         public IActionResult Contact()
         {
             return View();
+        }   
+        public IActionResult About()
+        {
+            return View();
         }
 
 
