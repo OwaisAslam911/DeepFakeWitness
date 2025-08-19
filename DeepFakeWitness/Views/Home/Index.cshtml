@@ -22,7 +22,7 @@
                             <input type="file" name="image" id="image" class="form-control" accept="image/*"
                                    required>
                         </div>
-                        <button type="submit" onclick="CheckResult()" class="btn btn-primary w-100" >Check</button>
+                        <button type="submit" class="btn btn-primary w-100" >Check</button>
                     </form>
                 </div>
             </div>
@@ -36,14 +36,14 @@
                 </div>
                 <div class="card-body">
                     <h5 id="resultText" class="text-center">
-                   @*      @if (ViewBag.Result != null)
+                        @if (ViewBag.Result != null)
                         {
                             @ViewBag.Result
                         }
                         else
                         {
                             <text>No result yet.</text>
-                        } *@
+                        }
                     </h5>
                 </div>
             </div>

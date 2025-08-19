@@ -84,7 +84,7 @@ namespace DeepFakeWitness.Controllers
 
         [HttpPost]
         public async Task<IActionResult> CheckImage(IFormFile image)
-        {
+         {
             if (image != null && image.Length > 0)
             {
                 // 1. Get user ID
@@ -164,7 +164,7 @@ namespace DeepFakeWitness.Controllers
                 return output.Trim(); // "Deepfake" or "Real"
             }
         }
-        public IActionResult Privacy()
+        public IActionResult Contact()
         {
             return View();
         }
