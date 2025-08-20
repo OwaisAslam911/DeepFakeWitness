@@ -3,6 +3,7 @@ using DeepFakeWitness.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
@@ -11,10 +12,12 @@ namespace DeepFakeWitness.Controllers
     public class AdminController : Controller
     {
         private readonly IConfiguration config;
+        private readonly DeepFakeWitnessContext _context;
 
-        public AdminController(IConfiguration config)
+        public AdminController(IConfiguration config, DeepFakeWitnessContext context)
         {
             this.config = config;
+            _context = _context;
         }
         public IActionResult Dashboard()
         {
@@ -302,7 +305,8 @@ namespace DeepFakeWitness.Controllers
             }
 
             return Json(new { status = "error", message = "Unexpected error occurred." });
-        }     public JsonResult ActiveUser(int userId)
+        }    
+        public JsonResult ActiveUser(int userId)
         {
             try
             {
@@ -330,6 +334,51 @@ namespace DeepFakeWitness.Controllers
             return Json(new { status = "error", message = "Unexpected error occurred." });
         }
 
+        [HttpGet]
+        public JsonResult GetNewMessagesCount()
+        {
+            try
+            {
+                var con = config.GetConnectionString("dbcs");
+                using (var connection = new SqlConnection(con))
+                {
+                    string query = "SELECT COUNT(*) FROM Contact WHERE IsRead = 0;";
+                    var result = connection.ExecuteScalar<int>(query); // Dapper one-liner
+                    return Json(new { newMessages = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { newMessages = 0, error = ex.Message });
+            }
+        }
+
+        // ✅ Show messages in admin panel
+        public IActionResult Messages()
+        {
+            return View();
+        }
+
+        // ✅ Mark a message as read
+        [HttpPost]
+        public IActionResult MarkAsRead(int id)
+        {
+            try
+            {
+                var message = _context.Contact.Find(id);
+                if (message != null)
+                {
+                    message.IsRead = true;
+                    _context.SaveChanges();
+                    return Json(new { success = true });
+                }
+                return Json(new { success = false, error = "Message not found" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
 
 
 

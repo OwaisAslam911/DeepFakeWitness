@@ -45,28 +45,28 @@
             <div class="card shadow-sm border-0">
                 <div class="card-body p-4">
                     <h4 class="mb-4">Leave us a message</h4>
-                    <form>
+                    
                         <div class="mb-3">
                             <label class="form-label">Your Name *</label>
-                            <input type="text" class="form-control" placeholder="Enter your name" required>
+                            <input type="text" id="name" class="form-control" placeholder="Enter your name" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Your Email *</label>
-                            <input type="email" class="form-control" placeholder="Enter your email" required>
+                            <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Subject</label>
-                            <input type="text" class="form-control" placeholder="Subject (optional)">
+                            <input type="text" id="subject" class="form-control" placeholder="Subject (optional)">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Message *</label>
-                            <textarea rows="5" class="form-control" placeholder="Type your message"
+                            <textarea rows="5" id="message" class="form-control" placeholder="Type your message"
                                       required></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">
+                        <button  class="btn btn-primary" onclick="SendMessage()">
                             Send Message <i class="fas fa-paper-plane ms-2"></i>
                         </button>
-                    </form>
+                   
                 </div>
             </div>
         </div>
@@ -126,3 +126,53 @@
         </div>
     </div>
 </section>
+
+<script>
+    function SendMessage() {
+        
+        debugger;
+        var name = $("#name").val().trim();
+        var subject = $("#subject").val().trim();
+        var email = $("#email").val().trim();
+        var message = $("#message").val().trim();
+
+        if (name === "") {
+            showToastifyMessage("Enter your Name", "error");
+            return;
+        }
+        if (email === "") {
+            showToastifyMessage("Enter your Email", "error");
+            return;
+        }
+        if (message === "") {
+            showToastifyMessage("Enter your Message", "error");
+            return;
+        }
+
+        var formData = {
+            UserName: name,
+            Email: email,
+            Subject: subject,
+            Message: message
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/Home/ContactAdmin",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify(formData),
+            success: function (response) {
+                if (response.success) {
+                    showToastifyMessage("Message Sent Successfully ✅", "success");
+                    $("#name, #email, #subject, #message").val(""); // clear form
+                } else {
+                    showToastifyMessage("Failed to send message ❌", "error");
+                }
+            },
+            error: function () {
+                showToastifyMessage("Something went wrong ❌", "error");
+            }
+        });
+    }
+</script>
+

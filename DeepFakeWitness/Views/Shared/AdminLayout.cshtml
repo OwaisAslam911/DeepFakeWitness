@@ -140,9 +140,13 @@
 
                 <ul class="navbar-nav align-items-center right-nav-link">
                     <li class="nav-item dropdown-lg">
-                        <a class="nav-link dropdown-toggle dropdown-toggle-nocaret waves-effect" data-toggle="dropdown" href="javascript:void();">
-                            <i class="fa fa-envelope-open-o"></i>
+                        <a class="nav-link" href="/Admin/Messages">
+                            <i class="fas fa-envelope"></i>
+                            <span id="newMessagesBadge" class="badge badge-danger">0</span>
                         </a>
+                       @*  <a class="nav-link dropdown-toggle dropdown-toggle-nocaret waves-effect" data-toggle="dropdown" href="javascript:void();">
+                            <i class="fa fa-envelope-open-o"> <span id="newMessagesBadge" class="badge badge-danger">0</span></i>
+                        </a> *@
                     </li>
                     <li class="nav-item dropdown-lg">
                         <a class="nav-link dropdown-toggle dropdown-toggle-nocaret waves-effect" data-toggle="dropdown" href="javascript:void();">
@@ -242,7 +246,7 @@
 
     </div><!--End wrapper-->
     <!-- Bootstrap core JavaScript-->
-   @* <script src="~/assets/js/jquery.min.js"></script>  *@
+    <script src="~/assets/js/jquery.min.js"></script> 
      
     <script src="~/assets/js/popper.min.js"></script>
     <script src="~/assets/js/bootstrap.min.js"></script>
@@ -262,7 +266,22 @@
     <!-- Index js -->
     <script src="~/assets/js/index.js"></script>
      <script>
+
+        function loadNewMessagesCount() {
+            $.get("/Admin/GetNewMessagesCount", function (data) {
+                $("#newMessagesBadge").text(data.newMessages);
+            });
+        }
+
+
         $(document).ready(function () {
+            debugger;
+            console.log($);
+            loadNewMessagesCount();
+
+            // Optional: refresh every 30s
+            // setInterval(loadNewMessagesCount, 30000);
+
             $('#logoutBtn').click(function (e) {
                 e.preventDefault();
 

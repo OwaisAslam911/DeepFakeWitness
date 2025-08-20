@@ -10,4 +10,5 @@ public class DeepFakeWitnessContext : IdentityDbContext
     }
 
     public DbSet<UserImage> UserImage { get; set; }
+    public DbSet<Contact> Contact { get; set; }
 }

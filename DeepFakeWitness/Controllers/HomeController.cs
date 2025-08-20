@@ -167,7 +167,29 @@ namespace DeepFakeWitness.Controllers
         public IActionResult Contact()
         {
             return View();
-        }   
+        }
+        [HttpPost]
+        public IActionResult ContactAdmin([FromBody] Contact contact)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    contact.IsRead = false;
+                    _context.Contact.Add(contact);
+                    _context.SaveChanges();
+
+                    return Json(new { success = true, message = "Message sent successfully!" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "Something went wrong: " + ex.Message });
+                }
+            }
+
+            return Json(new { success = false, message = "Invalid data. Please check again." });
+        }
+    
         public IActionResult About()
         {
             return View();
