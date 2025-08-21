@@ -21,6 +21,18 @@
     {
       "library": "font-awesome@6.4.0",
       "destination": "wwwroot/lib/font-awesome"
+    },
+    {
+      "library": "datatables.net@2.3.2",
+      "destination": "wwwroot/lib/datatables"
+    },
+    {
+      "library": "datatables.net-bs5@2.3.2",
+      "destination": "wwwroot/lib/datatables-bs5"
+    },
+    {
+      "library": "toastify-js@1.12.0",
+      "destination": "wwwroot/lib/toastify"
     }
   ]
 }

@@ -5,8 +5,7 @@
     ViewData["Title"] = "Messages";
 }
 
-@* <link href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.css" rel="stylesheet" /> *@
-@* <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet" /> *@
+
 
 <div class="content-wrapper">
     <div class="container-fluid">
@@ -38,23 +37,31 @@
         </div>
     </div>
 </div>
-<!-- JS libraries (must load first) -->
-@* <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script> *@
-<script src="https://cdn.datatables.net/2.3.2/js/dataTables.js"></script>
-<script src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-<script src="~/js/Toastify.js"></script>
-<!-- Initialize DataTable -->
+<script src="~/lib/jquery/jquery.min.js"></script>
 
 <script>
     $(document).ready(function () {
         loadMessagesTable();
+
+        $.ajax({
+            url: '@Url.Action("MarkAllMessagesAsRead", "AdminContact")',
+            type: 'POST',
+            success: function (response) {
+                if (response.success) {
+                    $("#newMessagesBadge").text("0");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error:", error);
+            }
+        });
+
     });
 
+
     function loadMessagesTable() {
-        debugger;
+   
         $('#example').DataTable().clear().destroy();
 
         $('#example').DataTable({

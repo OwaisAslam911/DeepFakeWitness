@@ -58,27 +58,28 @@ namespace DeepFakeWitness.Controllers
         }
 
         // ✅ Show messages in admin panel
-       
+
 
         // ✅ Mark a message as read
         [HttpPost]
-        public IActionResult MarkAsRead(int id)
+        public JsonResult MarkAllMessagesAsRead()
         {
             try
             {
-                var message = _context.Contact.Find(id);
-                if (message != null)
+                var con = config.GetConnectionString("dbcs");
+                using (var connection = new SqlConnection(con))
                 {
-                    message.IsRead = true;
-                    _context.SaveChanges();
-                    return Json(new { success = true });
+                    string query = "UPDATE Contact SET IsRead = 1 WHERE IsRead = 0;";
+                    var affectedRows = connection.Execute(query);
+
+                    return Json(new { success = true, updated = affectedRows });
                 }
-                return Json(new { success = false, error = "Message not found" });
             }
             catch (Exception ex)
             {
                 return Json(new { success = false, error = ex.Message });
             }
         }
+
     }
 }
