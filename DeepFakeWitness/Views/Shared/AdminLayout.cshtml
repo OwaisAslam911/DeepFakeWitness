@@ -268,15 +268,15 @@
      <script>
 
         function loadNewMessagesCount() {
-            $.get("/Admin/GetNewMessagesCount", function (data) {
-                $("#newMessagesBadge").text(data.newMessages);
+            $.get("@Url.Action("GetNewMessagesCount", "AdminContact", new { area = "Admin" })", function (data) {
+                if ($("#newMessagesBadge").length) {
+                    $("#newMessagesBadge").text(data.newMessages);
+                }
             });
         }
 
-
         $(document).ready(function () {
             debugger;
-            console.log($);
             loadNewMessagesCount();
 
             // Optional: refresh every 30s

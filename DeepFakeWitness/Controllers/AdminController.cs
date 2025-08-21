@@ -30,7 +30,14 @@ namespace DeepFakeWitness.Controllers
                     string query = "SELECT COUNT(*) FROM Users";
                     int userCount = connection.ExecuteScalar<int>(query);
 
+                    string ActiveUserQuery = "SELECT COUNT(*) FROM Users Where IsActive = 1";
+                    int ActiveuserCount = connection.ExecuteScalar<int>(ActiveUserQuery);  
+                    string MessagesQuery = "SELECT COUNT(*) FROM Contact";
+                    int MessagesCount = connection.ExecuteScalar<int>(MessagesQuery);
+
                     ViewBag.UserCount = userCount;
+                    ViewBag.ActiveUserCount = ActiveuserCount;
+                    ViewBag.MessagesCount = MessagesCount;
                 }
 
                 return View();
@@ -74,6 +81,17 @@ namespace DeepFakeWitness.Controllers
                 string UserQuery = "select * from Users u join UserRoles ur on ur.UserId = u.UserId join Roles r on ur.RoleId = r.RoleId Where IsActive = 0";
                 var UserList = connection.Query(UserQuery).ToList(); // or map to a DTO if preferred
                 return Json(new { data = UserList });
+            }
+        }
+
+        public JsonResult GetActiveUserCount()
+        {
+            var conn = config.GetConnectionString("dbcs");
+            using (var connection = new SqlConnection(conn))
+            {
+                string UserQuery = "select Count(*) from Users Where IsActive = 1";
+                var UserCount = connection.Query(UserQuery); // or map to a DTO if preferred
+                return Json(new { data = UserCount });
             }
         }
         public JsonResult GetUsers(Users users)
@@ -267,11 +285,7 @@ namespace DeepFakeWitness.Controllers
 
             return user;
         }
-        public IActionResult RegisterNewAdmin()
-        {
-            return View();
-        }
-
+    
 
         [HttpPost]
         public JsonResult PermenantlyDeleteUser(int userId)
@@ -334,51 +348,11 @@ namespace DeepFakeWitness.Controllers
             return Json(new { status = "error", message = "Unexpected error occurred." });
         }
 
-        [HttpGet]
-        public JsonResult GetNewMessagesCount()
-        {
-            try
-            {
-                var con = config.GetConnectionString("dbcs");
-                using (var connection = new SqlConnection(con))
-                {
-                    string query = "SELECT COUNT(*) FROM Contact WHERE IsRead = 0;";
-                    var result = connection.ExecuteScalar<int>(query); // Dapper one-liner
-                    return Json(new { newMessages = result });
-                }
-            }
-            catch (Exception ex)
-            {
-                return Json(new { newMessages = 0, error = ex.Message });
-            }
-        }
-
-        // ✅ Show messages in admin panel
         public IActionResult Messages()
         {
             return View();
         }
 
-        // ✅ Mark a message as read
-        [HttpPost]
-        public IActionResult MarkAsRead(int id)
-        {
-            try
-            {
-                var message = _context.Contact.Find(id);
-                if (message != null)
-                {
-                    message.IsRead = true;
-                    _context.SaveChanges();
-                    return Json(new { success = true });
-                }
-                return Json(new { success = false, error = "Message not found" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, error = ex.Message });
-            }
-        }
 
 
 
