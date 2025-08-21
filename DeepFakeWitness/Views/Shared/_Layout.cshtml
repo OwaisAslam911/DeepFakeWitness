@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/DeepFakeWitness.styles.css" asp-append-version="true" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-   
+    <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
     <style>
         body {
             background-color: #f8f9fa;
@@ -70,29 +70,45 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
                 <ul class="navbar-nav mb-2 mb-lg-0 fs-5">
                     <li class="nav-item"><a class="nav-link active" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="About">About</a></li>
                     <li class="nav-item"><a class="nav-link" asp-controller="Home" asp-action="Contact">Contact</a></li>
                     @if(role == "Admin")
                     { 
                     <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Dashboard">Admin</a></li>
                     }
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="~/uploads/0cab2fa9-daff-40eb-a57d-343d7d0eec95.jpg" style="width:20px; height:20px;" alt="Alternate Text" />
+                        <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-user"></i>
                         </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
-                            <li><a class="dropdown-item" href="#">Previous Results</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            @if(sessionSet == null || sessionSet == "")
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                @if (sessionSet == null || sessionSet == "")
+                                {
+                                    <!-- Redirect to Login if not logged in -->
+                                    <a class="dropdown-item" asp-controller="Login" asp-action="Login">Profile</a>
+                                <li><hr class="dropdown-divider"></li>
+                                }
+                                else
+                                {
+                                    <!-- Redirect to Profile page if logged in -->
+                                    <a class="dropdown-item" asp-controller="User" asp-action="Profile">Profile</a>
+                                <li><hr class="dropdown-divider"></li>
+                                }
+                            </li>
+
+                            @if (sessionSet == null || sessionSet == "")
                             {
-                            <li><a class="dropdown-item" asp-controller="Login" asp-action="Login">Login</a></li>
-
-                            }else{
+                                <li><a class="dropdown-item" asp-controller="Login" asp-action="Login">Login</a></li>
+                            }
+                            else
+                            {
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-controller="UserScanResults" asp-action="Index">Previous Results</a></li>
                                 <li><a class="dropdown-item" id="logoutBtn">Logout</a></li>
-
                             }
                         </ul>
+                  
+
                     </li>
                 </ul>
             </div>
@@ -150,11 +166,11 @@
                 e.preventDefault();
 
                 $.ajax({
-                    url: '/Login/LogoutUser', // update this if your controller is named differently
+                    url: '/Login/LogoutUser',
                     type: 'POST',
                     success: function (response) {
                         if (response.status === 'success') {
-                            window.location.href = '/Login/Login'; // redirect after logout
+                            window.location.href = '/Login/Login'; 
                         } else {
                             alert(response.message);
                         }
