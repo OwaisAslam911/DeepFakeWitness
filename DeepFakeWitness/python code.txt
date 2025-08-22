@@ -1,0 +1,63 @@
+import os
+import cv2
+import torch
+import torch.nn as nn
+import torchvision.transforms as transforms
+from PIL import Image
+from sklearn.metrics import accuracy_score
+from efficientnet_pytorch import EfficientNet
+
+# Load pre-trained model
+model = EfficientNet.from_pretrained('efficientnet-b0')
+classifier = nn.Linear(1000, 1)
+model = nn.Sequential(model, classifier)
+model.eval()
+
+# Define image transformations
+transform = transforms.Compose([
+    transforms.Resize((224, 224)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+])
+
+def predict(image_path):
+    image = cv2.imread(image_path)
+    if image is None:
+        return None
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    image = Image.fromarray(image)
+    image = transform(image).unsqueeze(0)
+
+    with torch.no_grad():
+        output = model(image)
+        prediction = torch.sigmoid(output).item()
+    return 1 if prediction > 0.5 else 0  # 1 = Deepfake, 0 = Real
+
+def evaluate_model(image_folder, labels_file):
+    """
+    image_folder: folder containing images
+    labels_file: text/csv file containing image_name,label (0=Real,1=Deepfake)
+    """
+    import csv
+
+    y_true = []
+    y_pred = []
+
+    with open(labels_file, 'r') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            img_name, label = row
+            img_path = os.path.join(image_folder, img_name)
+            pred = predict(img_path)
+            if pred is not None:
+                y_true.append(int(label))
+                y_pred.append(pred)
+
+    acc = accuracy_score(y_true, y_pred)
+    print(f"Model Accuracy: {acc*100:.2f}%")
+
+if __name__ == "__main__":
+    # Example usage:
+    image_folder = "test_images"
+    labels_file = "labels.csv"  # CSV file: image_name,label
+    evaluate_model(image_folder, labels_file)
