@@ -6,5 +6,83 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+
+<div class="content-wrapper">
+    <div class="container-fluid">
+        
+        <div class="card p-2">
+            <table id="example" class="table table-striped " style="width:100%">
+                <thead>
+                    <tr>
+                        <th>UserId</th>
+                        <th>Name</th>
+                        <th>Image</th>
+                        <th>Result</th>
+                        
+
+                    </tr>
+                </thead>
+
+                <tfoot>
+                    <tr>
+                        <th>UserId</th>
+                        <th>Name</th>
+                        <th>Image</th>
+                        <th>Result</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/lib/datatables/dataTables.min.js"></script>
+<script src="~/lib/datatables-bs5/dataTables.bootstrap5.min.js"></script>
+<script src="~/assets/js/popper.min.js"></script>
+<script src="~/assets/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function () {
+
+        loadResultsTable();
+    });
+    function loadResultsTable() {
+        $('#example').DataTable().clear().destroy();
+        $('#example').DataTable({
+            autoWidth: false,
+            columnDefs: [
+                { targets: '_all', className: 'text-wrap' }
+            ],
+            ajax: {
+                url: '/AdminScanResult/GetAllResults',
+                dataSrc: 'data'
+            },
+            columns: [
+                { data: 'UserId' },
+                { data: 'UserName' },
+                {
+                    data: 'FileName',
+                    render: function (data) {
+                        if (data) {
+                            return `<img src="/uploads/${data}" class="img-thumbnail" width="80" height="80"/>`;
+                        }
+                        return "No Image";
+                    }
+                },
+                { data: 'DetectionResult' }
+            ]
+        });
+    }
+
+
+
+
+
+
+
+</script>
+<script src="~/js/Toastify.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 
