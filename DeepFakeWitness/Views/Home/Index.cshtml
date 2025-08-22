@@ -11,19 +11,18 @@
                     Upload Image for Deepfake Detection
                 </div>
                 <div class="card-body">
-                     <form id="uploadForm" method="post" enctype="multipart/form-data" action="/Home/CheckImage"> 
-                  
-                        <div class="mb-3 text-center">
-                            <img id="imagePreview" src="#" alt="Preview" class="img-fluid rounded border shadow-sm"
-                                 style="display: none;" />
-                        </div>
-                        <div class="mb-3">
-                            <label for="image" class="form-label">Select Image</label>
-                            <input type="file" name="image" id="image" class="form-control" accept="image/*"
-                                   required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100" >Check</button>
-                    </form>
+                     <form id="uploadForm" enctype="multipart/form-data">
+    <div class="mb-3 text-center">
+        <img id="imagePreview" src="#" alt="Preview" class="img-fluid rounded border shadow-sm"
+             style="display: none;" />
+    </div>
+    <div class="mb-3">
+        <label for="image" class="form-label">Select Image</label>
+        <input type="file" name="image" id="image" class="form-control" accept="image/*" required>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Check</button>
+</form>
+
                 </div>
             </div>
         </div>
@@ -34,18 +33,26 @@
                 <div class="card-header bg-success text-white fw-bold">
                     Detection Result
                 </div>
-                <div class="card-body">
-                    <h5 id="resultText" class="text-center">
-                        @if (ViewBag.Result != null)
-                        {
-                            @ViewBag.Result
-                        }
-                        else
-                        {
-                            <text>No result yet.</text>
-                        }
-                    </h5>
-                </div>
+                    <div class="card-body text-center">
+                        <div id="loader" style="display:none;">
+                            <div class="spinner-border text-success" role="status">
+                                <span class="visually-hidden">Processing...</span>
+                            </div>
+                            <p class="mt-2">Processing image...</p>
+                        </div>
+
+                        <h5 id="resultText">
+                            @if (ViewBag.Result != null)
+                            {
+                                @ViewBag.Result
+                            }
+                            else
+                            {
+                                <text>No result yet.</text>
+                            }
+                        </h5>
+                    </div>
+
             </div>
         </div>
     </div>
@@ -54,58 +61,60 @@
 
 <script src="~/assets/js/jquery.min.js"></script>
 <script>
-
-
-    document.getElementById("image").addEventListener("change", function (event) {
-        const file = event.target.files[0];
-        const preview = document.getElementById("imagePreview");
-
+      $("#image").change(function () {
+        var file = this.files[0];
         if (file) {
-            const reader = new FileReader();
+            var reader = new FileReader();
             reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.style.display = "block";
+                $("#imagePreview")
+                    .attr("src", e.target.result)
+                    .show();
             };
             reader.readAsDataURL(file);
-        } else {
-            preview.style.display = "none";
         }
     });
-    // $("#uploadForm").submit(function (e) {
-    //     debugger;
-    //     e.preventDefault();
-    //     CheckResult();
-    // });
-    // function CheckResult() {
-    //     var imageExist = $("#image").val();
-    //     if (imageExist === "") {
-    //         showToastifyMessage("Please select an image", "error");
-    //         return;
-    //     }
+    $("#uploadForm").submit(function (e) {
+        e.preventDefault();
 
-    //     var formData = new FormData();
-    //     formData.append("image", $("#image")[0].files[0]);
-    //     debugger;
-    //     $.ajax({
-    //         url: '/Home/CheckImage', // adjust if your route is different
-    //         type: 'POST',
-    //         data: formData,
-    //         processData: false, // important for FormData
-    //         contentType: false, // important for FormData
-    //         success: function (response) {
-    //             debugger;
-    //             if (response.success) {
-    //                 debugger;
-    //                 $("#resultText").text(response.message);
-    //             } else {
-    //                 $("#resultText").text(response.message);
-    //             }
-    //         },
-    //         // error: function (xhr, status, error) {
-    //         //     console.error(error);
-    //         //     $("#resultText").text("An error occurred while checking the image.");
-    //         // }
-    //     });
-    // }
+        var imageExist = $("#image").val();
+        if (imageExist === "") {
+            alert("Please select an image.");
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append("image", $("#image")[0].files[0]);
+        $("#loader").show();
+        $("#resultText").text("");
+        $.ajax({
+            url: '/Home/CheckImage',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                $("#loader").hide();
+                if (!response.success && response.message === "Please login first.") {
+                    alert("⚠️ " + response.message);
+                    return;
+                }
+
+                if (response.success) {
+                    $("#loader").hide();
+                    $("#resultText").text(response.message);
+                    $("#imagePreview").attr("src", response.imagePath).show();
+                } else {
+                    $("#loader").hide();
+                    $("#resultText").text(response.message);
+                }
+            },
+            error: function () {
+                $("#loader").hide();
+                $("#resultText").text("An error occurred while checking the image.");
+            }
+        });
+    });
+
+   
 
  </script>

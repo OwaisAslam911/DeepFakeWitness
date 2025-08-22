@@ -46,56 +46,22 @@ namespace DeepFakeWitness.Controllers
             //}
             return View();
         }
-        //[HttpPost]
-        //public async Task<JsonResult> CheckImage(IFormFile image)
-        //{
-        //    if (image != null && image.Length > 0)
-        //    {
-        //        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-        //        string uploadsPath = Path.Combine(_env.WebRootPath, "uploads");
-        //        if (!Directory.Exists(uploadsPath))
-        //            Directory.CreateDirectory(uploadsPath);
-
-        //        string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
-        //        string fullImagePath = Path.Combine(uploadsPath, uniqueFileName);
-
-        //        using (var stream = new FileStream(fullImagePath, FileMode.Create))
-        //        {
-        //            await image.CopyToAsync(stream);
-        //        }
-
-        //        string result = RunPythonDetection(fullImagePath);
-
-        //        var userImage = new UserImage
-        //        {
-        //            FileName = uniqueFileName,
-        //            UserId = userId,
-        //            DetectionResult = result
-        //        };
-        //        _context.UserImage.Add(userImage);
-        //        await _context.SaveChangesAsync();
-
-        //        return Json(new { success = true, message = result });
-        //    }
-
-        //    return Json(new { success = false, message = "Please upload a valid image." });
-        //}
-
         [HttpPost]
         public async Task<IActionResult> CheckImage(IFormFile image)
-         {
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            if (userId == null)
+            {
+                return Json(new { success = false, message = "Please login to continue." });
+            }
+
             if (image != null && image.Length > 0)
             {
-                // 1. Get user ID
-                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-                // 2. Create uploads folder if not exists
                 string uploadsPath = Path.Combine(_env.WebRootPath, "uploads");
                 if (!Directory.Exists(uploadsPath))
                     Directory.CreateDirectory(uploadsPath);
 
-                // 3. Save image
                 string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
                 string fullImagePath = Path.Combine(uploadsPath, uniqueFileName);
 
@@ -104,29 +70,69 @@ namespace DeepFakeWitness.Controllers
                     await image.CopyToAsync(stream);
                 }
 
-                // 4. Run Python detection
                 string result = RunPythonDetection(fullImagePath);
 
-                // 5. Save to database
                 var userImage = new UserImage
                 {
                     FileName = uniqueFileName,
-                    UserId = userId,
+                    UserId = userId.Value,   // from session
                     DetectionResult = result
                 };
                 _context.UserImage.Add(userImage);
                 _context.SaveChanges();
 
-                // 6. Show result
-                ViewBag.ImagePath = "/uploads/" + uniqueFileName;
-                ViewBag.Result = result;
-
-                return View("Index");
+                return Json(new { success = true, message = result, imagePath = "/uploads/" + uniqueFileName });
             }
 
-            ModelState.AddModelError("", "Please upload a valid image.");
-            return RedirectToAction("Index");
+            return Json(new { success = false, message = "Please upload a valid image." });
         }
+
+
+        //[HttpPost]
+        //public async Task<IActionResult> CheckImage(IFormFile image)
+        // {
+        //    if (image != null && image.Length > 0)
+        //    {
+        //        // 1. Get user ID
+        //        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        //        // 2. Create uploads folder if not exists
+        //        string uploadsPath = Path.Combine(_env.WebRootPath, "uploads");
+        //        if (!Directory.Exists(uploadsPath))
+        //            Directory.CreateDirectory(uploadsPath);
+
+        //        // 3. Save image
+        //        string uniqueFileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+        //        string fullImagePath = Path.Combine(uploadsPath, uniqueFileName);
+
+        //        using (var stream = new FileStream(fullImagePath, FileMode.Create))
+        //        {
+        //            await image.CopyToAsync(stream);
+        //        }
+
+        //        // 4. Run Python detection
+        //        string result = RunPythonDetection(fullImagePath);
+
+        //        // 5. Save to database
+        //        var userImage = new UserImage
+        //        {
+        //            FileName = uniqueFileName,
+        //            UserId = userId,
+        //            DetectionResult = result
+        //        };
+        //        _context.UserImage.Add(userImage);
+        //        _context.SaveChanges();
+
+        //        // 6. Show result
+        //        ViewBag.ImagePath = "/uploads/" + uniqueFileName;
+        //        ViewBag.Result = result;
+
+        //        return View("Index");
+        //    }
+
+        //    ModelState.AddModelError("", "Please upload a valid image.");
+        //    return RedirectToAction("Index");
+        //}
 
         private string RunPythonDetection(string imagePath)
         {

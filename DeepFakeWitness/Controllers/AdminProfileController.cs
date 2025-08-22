@@ -4,7 +4,7 @@ namespace DeepFakeWitness.Controllers
 {
     public class AdminProfileController : Controller
     {
-        public IActionResult Index()
+        public IActionResult AdminProfile()
         {
             return View();
         }

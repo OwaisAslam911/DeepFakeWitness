@@ -91,7 +91,7 @@
                                 else
                                 {
                                     <!-- Redirect to Profile page if logged in -->
-                                    <a class="dropdown-item" asp-controller="User" asp-action="Profile">Profile</a>
+                                    <a class="dropdown-item" asp-controller="UserProfile" asp-action="Profile">Profile</a>
                                 <li><hr class="dropdown-divider"></li>
                                 }
                             </li>
@@ -102,8 +102,7 @@
                             }
                             else
                             {
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" asp-controller="UserScanResults" asp-action="Index">Previous Results</a></li>
+                                
                                 <li><a class="dropdown-item" id="logoutBtn">Logout</a></li>
                             }
                         </ul>
